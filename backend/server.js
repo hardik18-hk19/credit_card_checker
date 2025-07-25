@@ -8,18 +8,18 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4001;
 
-app.use(express.json());
 app.use(
   cors({
     origin: [
       "http://localhost:3000",
       "https://credit-card-checker-psi.vercel.app",
     ],
+    methods: ["POST", "OPTIONS"],
     credentials: true,
   })
 );
 
-app.options("*", cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Express App is Running");
