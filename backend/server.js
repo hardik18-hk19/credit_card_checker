@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://credit-card-checker-psi.vercel.app/",
+      "https://credit-card-checker-psi.vercel.app",
     ],
     credentials: true,
   })
