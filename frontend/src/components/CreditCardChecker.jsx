@@ -12,13 +12,7 @@ const CreditCardChecker = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
 
-    // Remove all non-numeric characters
-    const numericOnly = value.replace(/\D/g, "");
-
-    // Limit to 16 digits (standard credit card length)
-    const limitedValue = numericOnly.slice(0, 16);
-
-    setCardNumber(limitedValue);
+    setCardNumber(value);
   };
 
   const validateCardNumber = async () => {
@@ -38,8 +32,9 @@ const CreditCardChecker = () => {
         toast.info(suggestion);
       }
     } catch (error) {
-      toast.error("Failed to validate card number");
-      console.error("Validation error:", error);
+      toast.error(
+        error.response?.data?.message || "Failed to validate card number"
+      );
     }
   };
 

@@ -2,16 +2,19 @@ export const checkCreditCard = async (req, res) => {
   try {
     const { cardNumber } = req.body;
 
-    if (!cardNumber || isNaN(cardNumber)) {
-      return res
-        .status(400)
-        .json({ error: "Card number is required and must be numeric" });
+    if (!cardNumber) {
+      return res.status(400).json({
+        success: false,
+        message: "Card number is required and must be numeric",
+      });
     }
 
     const digits = cardNumber.length;
 
-    if (digits < 12 || digits > 19) {
-      return res.status(400).json({ error: "Invalid card number length" });
+    if (digits < 15 || digits > 16) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid card number length" });
     }
 
     if (luhnCheck(cardNumber)) {
@@ -21,7 +24,7 @@ export const checkCreditCard = async (req, res) => {
     }
 
     // One Digit Short
-    if (digits >= 12 && digits <= 18) {
+    if (digits == 15) {
       for (let i = 0; i <= 9; i++) {
         const testNumber = cardNumber + i;
         if (luhnCheck(testNumber)) {
@@ -35,7 +38,7 @@ export const checkCreditCard = async (req, res) => {
     }
 
     // Correct LAst Digit
-    if (digits >= 13 && digits <= 19) {
+    if (digits == 16) {
       const prefix = cardNumber.slice(0, -1);
       for (let i = 0; i <= 9; i++) {
         const testNumber = prefix + i;
