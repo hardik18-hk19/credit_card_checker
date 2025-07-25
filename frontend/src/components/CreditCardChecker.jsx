@@ -12,24 +12,34 @@ const CreditCardChecker = () => {
   const handleInputChange = (e) => {
     const value = e.target.value;
 
-    setCardNumber(value);
+    // Remove all non-numeric characters
+    const numericOnly = value.replace(/\D/g, "");
+
+    // Limit to 16 digits (standard credit card length)
+    const limitedValue = numericOnly.slice(0, 16);
+
+    setCardNumber(limitedValue);
   };
 
   const validateCardNumber = async () => {
-    const response = await axiosInstance.post("/check-credit-card", {
-      cardNumber: cardNumber.trim(),
-    });
+    try {
+      const response = await axiosInstance.post("/validate-card", {
+        cardNumber: cardNumber.trim(),
+      });
 
-    if (response.data.success) {
-      toast.success(response.data.message);
-    }
+      if (response.data.success) {
+        toast.success(response.data.message);
+      } else {
+        toast.error(response.data.message);
+      }
 
-    if (response.data.success === false) {
-      toast.success(response.data.message);
-    }
-    const suggestion = response.data?.suggestion;
-    if (suggestion) {
-      toast.info(suggestion);
+      const suggestion = response.data?.suggestion;
+      if (suggestion) {
+        toast.info(suggestion);
+      }
+    } catch (error) {
+      toast.error("Failed to validate card number");
+      console.error("Validation error:", error);
     }
   };
 
