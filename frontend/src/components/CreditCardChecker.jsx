@@ -1,10 +1,40 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
+import axiosInstance from "../lib/axios";
+import { toast } from "sonner";
 
 const CreditCardChecker = () => {
+  const [cardNumber, setCardNumber] = useState("");
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+
+    setCardNumber(value);
+  };
+
+  const validateCardNumber = async () => {
+    const response = await axiosInstance.post("/check-credit-card", {
+      cardNumber: cardNumber.trim(),
+    });
+
+    if (response.data.success) {
+      toast.success(response.data.message);
+    }
+
+    if (response.data.success === false) {
+      toast.success(response.data.message);
+    }
+    const suggestion = response.data?.suggestion;
+    if (suggestion) {
+      toast.info(suggestion);
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-black">
+    <div className="flex items-center justify-center p-4 bg-black min-h-[calc(100vh-80px)]">
       <div className="w-full max-w-md p-6 bg-gray-900 border border-gray-700 rounded-lg">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-white mb-2">
@@ -19,12 +49,20 @@ const CreditCardChecker = () => {
               Card Number
             </label>
             <Input
-              placeholder="1234 5678 9012 3456"
+              placeholder="1234567890123456"
               className="w-full bg-gray-800 border-gray-600 text-white"
+              onChange={handleInputChange}
+              value={cardNumber}
+              maxLength="16"
+              type="text"
             />
           </div>
 
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2">
+          <Button
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2"
+            onClick={validateCardNumber}
+            type="button"
+          >
             Validate Card
           </Button>
         </form>

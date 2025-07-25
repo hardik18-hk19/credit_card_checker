@@ -15,7 +15,9 @@ export const checkCreditCard = async (req, res) => {
     }
 
     if (luhnCheck(cardNumber)) {
-      return res.status(200).json({ message: "Valid card number" });
+      return res
+        .status(200)
+        .json({ success: true, message: "Valid card number" });
     }
 
     // One Digit Short
@@ -24,6 +26,7 @@ export const checkCreditCard = async (req, res) => {
         const testNumber = cardNumber + i;
         if (luhnCheck(testNumber)) {
           return res.status(200).json({
+            success: false,
             message: "Card number is one digit short",
             suggestion: `Add '${i}' at the end → ${testNumber}`,
           });
@@ -38,6 +41,7 @@ export const checkCreditCard = async (req, res) => {
         const testNumber = prefix + i;
         if (luhnCheck(testNumber)) {
           return res.status(200).json({
+            success: false,
             message: "Card number is invalid",
             suggestion: `Replace last digit with '${i}' → ${testNumber}`,
           });
